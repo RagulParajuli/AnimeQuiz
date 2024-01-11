@@ -14,15 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.animequiz.QuestionAnswer.Narutoqns;
 import com.example.animequiz.R;
-
 public class NarutoActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView totalQuestionTextView, questions;
     private Button optionA, optionB, optionC, optionD, submitButton;
     private int score = 0;
     private int questionLength = Narutoqns.questions.length;
     private int currentQuestionIndex = 0;
-    private String selectedAnswer = "";
-    @SuppressLint("MissingInflatedId")
+    private String[] selectedAnswer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +33,6 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
         optionC = findViewById(R.id.optionC);
         optionD = findViewById(R.id.optionD);
         submitButton = findViewById(R.id.submit);
-
         // Set OnClickListener for the buttons
         optionA.setOnClickListener(this);
         optionB.setOnClickListener(this);
@@ -44,6 +41,8 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
         submitButton.setOnClickListener(this);
 
         totalQuestionTextView.setText("Total Questions: " + questionLength);
+        // Initialize the array with the length of the question set
+        selectedAnswer = new String[questionLength];
 
         loadNewQuestion();
     }
@@ -51,9 +50,9 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         resetButtonBackgrounds();
         Button clickedButton = (Button) v;
-
         if (v.getId() == R.id.submit) {
-            if (selectedAnswer.equals(Narutoqns.correctAnswers[currentQuestionIndex])) {
+            if (selectedAnswer[currentQuestionIndex] != null &&
+                    selectedAnswer[currentQuestionIndex].equals(Narutoqns.correctAnswers[currentQuestionIndex])) {
                 score++;
             }
             if (currentQuestionIndex < questionLength - 1) {
@@ -63,7 +62,7 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
                 finishQuiz();
             }
         } else {
-            selectedAnswer = clickedButton.getText().toString();
+            selectedAnswer[currentQuestionIndex] = clickedButton.getText().toString();
             clickedButton.setBackgroundColor(Color.GREEN);
         }
     }
@@ -86,11 +85,10 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
     }
     private void finishQuiz() {
         StringBuilder resultMessage = new StringBuilder("Score is " + score + " out of " + questionLength + "\n\n");
-        String passStatus = (currentQuestionIndex >= questionLength / 2) ? "Passed" : "Failed";
-
+        String passStatus = (score >= questionLength / 2) ? "Passed" : "Failed";
         for (int i = 0; i < questionLength; i++) {
             resultMessage.append("\nQuestion ").append(i + 1).append(": ");
-            resultMessage.append("Your Answer: ").append(selectedAnswer);
+            resultMessage.append("Your Answer: ").append(selectedAnswer[i]);
             resultMessage.append(", Correct Answer: ").append(Narutoqns.correctAnswers[i]);
         }
         // Log information for debugging
@@ -107,8 +105,8 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
         score = 0;
         currentQuestionIndex = 0;
         // Start QuizActivity
-        Intent intent = new Intent(NarutoActivity.this, QuizActivity.class);
-        startActivity(intent);
+        Intent naruto = new Intent(NarutoActivity.this, QuizActivity.class);
+        startActivity(naruto);
         // Finish the current activity (NarutoActivity)
         finish();
     }

@@ -54,7 +54,6 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
     }
-
     public void animeImage(View view){
         if(view.getId() == R.id.narutoview){
             Intent naruto = new Intent(this, NarutoActivity.class);
