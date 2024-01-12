@@ -30,7 +30,7 @@
         android:fontFamily="@font/bevan"
         android:text="Questions will be here"
         android:textColor="@android:color/white"
-        android:textSize="28sp" />
+        android:textSize="26sp" />
 
     <LinearLayout
         android:id="@+id/choicesLayout"
@@ -70,9 +70,9 @@
     <Button
         android:id="@+id/submit"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_below="@+id/choicesLayout"
-        android:layout_marginTop="55dp"
-        android:text="Button" />
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:text="Submit" />
 
 </RelativeLayout>

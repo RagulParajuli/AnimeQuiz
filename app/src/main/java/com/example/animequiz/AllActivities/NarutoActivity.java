@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,7 +19,7 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
     private TextView totalQuestionTextView, questions;
     private Button optionA, optionB, optionC, optionD, submitButton;
     private int score = 0;
-    private int questionLength = Narutoqns.questions.length;
+    private final int questionLength = Narutoqns.questions.length;
     private int currentQuestionIndex = 0;
     private String[] selectedAnswer;
     @Override
@@ -50,22 +51,32 @@ public class NarutoActivity extends AppCompatActivity implements View.OnClickLis
     public void onClick(View v) {
         resetButtonBackgrounds();
         Button clickedButton = (Button) v;
+
         if (v.getId() == R.id.submit) {
-            if (selectedAnswer[currentQuestionIndex] != null &&
-                    selectedAnswer[currentQuestionIndex].equals(Narutoqns.correctAnswers[currentQuestionIndex])) {
-                score++;
-            }
-            if (currentQuestionIndex < questionLength - 1) {
-                currentQuestionIndex++;
-                loadNewQuestion();
+            if (selectedAnswer[currentQuestionIndex] == null) {
+                // Show a warning toast if no answer is selected
+                Toast.makeText(this, "Please select an answer", Toast.LENGTH_SHORT).show();
+                optionA.setBackgroundColor(Color.RED);
+                optionB.setBackgroundColor(Color.RED);
+                optionC.setBackgroundColor(Color.RED);
+                optionD.setBackgroundColor(Color.RED);
             } else {
-                finishQuiz();
+                if (selectedAnswer[currentQuestionIndex].equals(Narutoqns.correctAnswers[currentQuestionIndex])) {
+                    score++;
+                }
+                if (currentQuestionIndex < questionLength - 1) {
+                    currentQuestionIndex++;
+                    loadNewQuestion();
+                } else {
+                    finishQuiz();
+                }
             }
         } else {
             selectedAnswer[currentQuestionIndex] = clickedButton.getText().toString();
             clickedButton.setBackgroundColor(Color.GREEN);
         }
     }
+
     private void resetButtonBackgrounds() {
         optionA.setBackgroundColor(Color.WHITE);
         optionB.setBackgroundColor(Color.WHITE);

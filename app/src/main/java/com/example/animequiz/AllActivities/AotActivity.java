@@ -1,6 +1,7 @@
 package com.example.animequiz.AllActivities;
 
-import android.annotation.SuppressLint;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,10 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
-import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.example.animequiz.QuestionAnswer.Aotqns;
+import com.example.animequiz.QuestionAnswer.Narutoqns;
 import com.example.animequiz.R;
 
 public class AotActivity extends AppCompatActivity implements View.OnClickListener {
@@ -22,11 +23,12 @@ public class AotActivity extends AppCompatActivity implements View.OnClickListen
     private final int questionLength = Aotqns.questions.length;
     private int currentQuestionIndex = 0;
     private String[] selectedAnswer;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aot);
-
         totalQuestionTextView = findViewById(R.id.totalQuestion);
         questions = findViewById(R.id.questions);
         optionA = findViewById(R.id.optionA);
@@ -34,7 +36,6 @@ public class AotActivity extends AppCompatActivity implements View.OnClickListen
         optionC = findViewById(R.id.optionC);
         optionD = findViewById(R.id.optionD);
         submitButton = findViewById(R.id.submit);
-
         // Set OnClickListener for the buttons
         optionA.setOnClickListener(this);
         optionB.setOnClickListener(this);
@@ -43,27 +44,34 @@ public class AotActivity extends AppCompatActivity implements View.OnClickListen
         submitButton.setOnClickListener(this);
 
         totalQuestionTextView.setText("Total Questions: " + questionLength);
-
         // Initialize the array with the length of the question set
         selectedAnswer = new String[questionLength];
-
         loadNewQuestion();
     }
+
     @Override
     public void onClick(View v) {
         resetButtonBackgrounds();
         Button clickedButton = (Button) v;
 
         if (v.getId() == R.id.submit) {
-            if (selectedAnswer[currentQuestionIndex] != null &&
-                    selectedAnswer[currentQuestionIndex].equals(Aotqns.correctAnswers[currentQuestionIndex])) {
-                score++;
-            }
-            if (currentQuestionIndex < questionLength - 1) {
-                currentQuestionIndex++;
-                loadNewQuestion();
+            if (selectedAnswer[currentQuestionIndex] == null) {
+                // Show a warning toast if no answer is selected
+                Toast.makeText(this, "Please select an answer", Toast.LENGTH_SHORT).show();
+                optionA.setBackgroundColor(Color.RED);
+                optionB.setBackgroundColor(Color.RED);
+                optionC.setBackgroundColor(Color.RED);
+                optionD.setBackgroundColor(Color.RED);
             } else {
-                finishQuiz();
+                if (selectedAnswer[currentQuestionIndex].equals(Narutoqns.correctAnswers[currentQuestionIndex])) {
+                    score++;
+                }
+                if (currentQuestionIndex < questionLength - 1) {
+                    currentQuestionIndex++;
+                    loadNewQuestion();
+                } else {
+                    finishQuiz();
+                }
             }
         } else {
             selectedAnswer[currentQuestionIndex] = clickedButton.getText().toString();
@@ -77,30 +85,25 @@ public class AotActivity extends AppCompatActivity implements View.OnClickListen
         optionC.setBackgroundColor(Color.WHITE);
         optionD.setBackgroundColor(Color.WHITE);
     }
-
     private void loadNewQuestion() {
-        if (currentQuestionIndex == questionLength - 1) {
+        if (currentQuestionIndex == questionLength) {
             finishQuiz();
             return;
         }
-
-        questions.setText(Aotqns.questions[currentQuestionIndex]);
-        optionA.setText(Aotqns.choices[currentQuestionIndex][0]);
-        optionB.setText(Aotqns.choices[currentQuestionIndex][1]);
-        optionC.setText(Aotqns.choices[currentQuestionIndex][2]);
-        optionD.setText(Aotqns.choices[currentQuestionIndex][3]);
-    }
-
+            questions.setText(Aotqns.questions[currentQuestionIndex]);
+            optionA.setText(Aotqns.choices[currentQuestionIndex][0]);
+            optionB.setText(Aotqns.choices[currentQuestionIndex][1]);
+            optionC.setText(Aotqns.choices[currentQuestionIndex][2]);
+            optionD.setText(Aotqns.choices[currentQuestionIndex][3]);
+        }
     private void finishQuiz() {
         StringBuilder resultMessage = new StringBuilder("Score is " + score + " out of " + questionLength + "\n\n");
         String passStatus = (score >= questionLength / 2) ? "Passed" : "Failed";
-
         for (int i = 0; i < questionLength; i++) {
             resultMessage.append("\nQuestion ").append(i + 1).append(": ");
             resultMessage.append("Your Answer: ").append(selectedAnswer[i]);
             resultMessage.append(", Correct Answer: ").append(Aotqns.correctAnswers[i]);
         }
-
         // Log information for debugging
         Log.d("Quiz", "Finish Quiz - Status: " + passStatus + ", Score: " + score + "/" + questionLength);
 
@@ -111,14 +114,13 @@ public class AotActivity extends AppCompatActivity implements View.OnClickListen
                 .setCancelable(false)
                 .show();
     }
-
     private void restartQuiz() {
         score = 0;
         currentQuestionIndex = 0;
         // Start QuizActivity
         Intent aot = new Intent(AotActivity.this, QuizActivity.class);
         startActivity(aot);
-        // Finish the current activity (AotActivity)
+        // Finish the current activity (NarutoActivity)
         finish();
     }
 }

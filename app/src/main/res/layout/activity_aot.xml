@@ -30,7 +30,7 @@
         android:fontFamily="@font/bevan"
         android:text="Questions will be here"
         android:textColor="@android:color/white"
-        android:textSize="28sp" />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:id="@+id/choicesLayout"

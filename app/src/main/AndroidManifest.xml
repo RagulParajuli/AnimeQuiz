@@ -13,6 +13,9 @@
         android:theme="@style/Theme.AnimeQuiz"
         tools:targetApi="31">
         <activity
+            android:name=".AllActivities.AotActivity"
+            android:exported="false" />
+        <activity
             android:name=".AllActivities.NarutoActivity"
             android:exported="false" />
         <activity
@@ -20,9 +23,6 @@
             android:exported="false" />
         <activity
             android:name=".AllActivities.CoteActivity"
-            android:exported="false" />
-        <activity
-            android:name=".AllActivities.AotActivity"
             android:exported="false" />
         <activity
             android:name=".AllActivities.QuizActivity"
